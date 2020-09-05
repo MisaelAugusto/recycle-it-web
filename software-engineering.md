@@ -162,4 +162,8 @@
     <td>03</td>
     <td>Utilizar Knex + sqlite3 como banco de dados</td>
   </tr>
+  <tr align="center">
+    <td>04</td>
+    <td>Utilizar a linguagem de programação Typescript</td>
+  </tr>
 </table>
