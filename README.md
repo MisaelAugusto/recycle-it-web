@@ -1,4 +1,4 @@
-<img align="center" src="PROJECT-COVER" alt="Recycle It" />
+<img align="center" src="https://ik.imagekit.io/ocq8ayf2ug/recycle-it-cover_FONIIQUTX.svg" alt="Recycle It" />
 
 <h1 id="title" align="center">Recycle It</h1>
 

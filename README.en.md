@@ -1,4 +1,4 @@
-<img id="cover" align="center" src="PROJECT-COVER" alt="Recycle It" />
+<img id="cover" align="center" src="https://ik.imagekit.io/ocq8ayf2ug/recycle-it-cover_FONIIQUTX.svg" alt="Recycle It" />
 
 <h1 id="title" align="center">Recycle It</h1>
 
@@ -13,7 +13,7 @@
 
 <h2 id="description">📑️ Description</h2>
 <p>
-  Recycle It is a platform for connecting people and recycling through collection points. People who have the desire to recycle, but do not know what to do with the garbage, where to take it, or do not have enough motivation to maintain this habit, can register on the platform, search for nearby collection points and schedule a recycling time. The collection point weighs the garbage to be recycled and counts this amount in the user's profile, then the system automatically credits some cash points for the user to use in the system store in the future. In addition to the credit bonus, the user has access to information on the amount of garbage already recycled through a system of achievements and these two features will serve as a motivation for the user to continue recycling more and more.
+  Recycle It is a platform for connecting people and recycling through collection points. People who have the desire to recycle, but do not know what to do with the garbage, where to take it, or do not have enough motivation to maintain this habit, can register on the platform, search for nearby collect points and schedule a recycling time. The collect point weighs the garbage to be recycled and counts this amount in the user's profile, then the system automatically credits some cash points for the user to use in the system store in the future. In addition to the credit bonus, the user has access to information on the amount of garbage already recycled through a system of achievements and these two features will serve as a motivation for the user to continue recycling more and more.
 </p>
 
 <h2 id="preview">📽️ Preview</h2>

@@ -1,3 +1,5 @@
+<img align="center" src="https://ik.imagekit.io/ocq8ayf2ug/recycle-it-cover_FONIIQUTX.svg" alt="Recycle It" />
+
 <h1 align="center">Recycle It</h1>
 
 <h2>🛠️ Requisitos Funcionais</h2>
