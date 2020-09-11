@@ -2,6 +2,11 @@
 
 <h1 align="center">Recycle It</h1>
 
+<h2>✒️ Prototipação</h2>
+<h3>
+  Layout para <a href="https://www.figma.com/file/MTrfODoA9jGscl5IcH6Sli/Recycle-It?node-id=0%3A1">WEB</a>
+</h3>
+
 <h2>🛠️ Requisitos Funcionais</h2>
 <table width="100%">
   <tr>
