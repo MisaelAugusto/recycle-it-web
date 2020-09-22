@@ -27,9 +27,21 @@ class CollectPointsRepository {
   public create({
     name,
     email,
-    password
+    password,
+    city,
+    state,
+    items,
+    schedules
   }: ICreateCollectPointDTO): CollectPoint {
-    const collectPoint = new CollectPoint({ name, email, password });
+    const collectPoint = new CollectPoint({
+      name,
+      email,
+      password,
+      city,
+      state,
+      items,
+      schedules
+    });
 
     this.collectPoints.push(collectPoint);
 

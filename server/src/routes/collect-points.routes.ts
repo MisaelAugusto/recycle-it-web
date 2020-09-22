@@ -6,7 +6,7 @@ const collectPointsRouter = Router();
 
 const collectPointsController = new CollectPointsController();
 
-collectPointsRouter.get('/', collectPointsController.show);
+collectPointsRouter.get('/', collectPointsController.index);
 collectPointsRouter.post('/', collectPointsController.create);
 
 export default collectPointsRouter;
