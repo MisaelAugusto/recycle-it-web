@@ -1,8 +1,20 @@
 import React from 'react';
+import { BrowserRouter, Route } from 'react-router-dom';
+
+import Login from './pages/Login';
+import PreRegister from './pages/PreRegister';
+
+import GlobalStyle from './styles/global';
 
 const App: React.FC = () => {
   return (
-    <h1>Recycle It</h1>
+    <>
+      <BrowserRouter>
+        <Route path="/" exact component={Login} />
+        <Route path="/pre-register" component={PreRegister} />
+      </BrowserRouter>
+      <GlobalStyle />
+    </>
   );
 };
 
