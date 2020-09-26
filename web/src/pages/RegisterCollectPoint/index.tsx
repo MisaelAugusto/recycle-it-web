@@ -6,7 +6,7 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import LogoImg from '../../assets/recycle-logo.png';
-import ForegroundImg from '../../assets/login-foreground.png';
+import CollectPointImg from '../../assets/collect-point-foreground.png';
 
 import {
   Container,
@@ -49,7 +49,7 @@ const Login: React.FC = () => {
           </Link>
         </Nav>
       </Content>
-      <Foreground src={ForegroundImg} alt="Pessoas reciclando juntas" />
+      <Foreground src={CollectPointImg} alt="Ponto de coleta" />
     </Container>
   );
 };
