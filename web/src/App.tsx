@@ -2,8 +2,9 @@ import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import Login from './pages/Login';
+import Register from './pages/Register';
 import PreRegister from './pages/PreRegister';
-import RegisterCollectPoint from './pages/RegisterCollectPoint';
+import RecyclerRegister from './pages/RecyclerRegister';
 
 import GlobalStyle from './styles/global';
 
@@ -12,8 +13,9 @@ const App: React.FC = () => {
     <>
       <BrowserRouter>
         <Route path="/" exact component={Login} />
-        <Route path="/register" exact component={PreRegister} />
-        <Route path="/register/collect-point" component={RegisterCollectPoint} />
+        <Route path="/register" component={Register} />
+        <Route path="/pre-register" component={PreRegister} />
+        <Route path="/recycler-register" component={RecyclerRegister} />
       </BrowserRouter>
       <GlobalStyle />
     </>

@@ -22,4 +22,15 @@ export default createGlobalStyle`
   button {
     cursor: pointer;
   }
+
+  @keyframes fadeIn {
+    from {
+      transform: scale(0.6);
+      opacity: 0.3;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
 `;

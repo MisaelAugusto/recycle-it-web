@@ -12,7 +12,7 @@ export const Container = styled.button`
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 
   &:hover {
-    background: #43A047;
+    background: #43a047;
     transform: scale(1.05);
   }
 `;
