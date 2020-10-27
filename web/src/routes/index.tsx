@@ -7,15 +7,17 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import PreRegister from '../pages/PreRegister';
 import RecyclerRegister from '../pages/RecyclerRegister';
-// import RecyclerDashboard from '../pages/RecyclerDashboard';
+import RecyclerDashboard from '../pages/RecyclerDashboard';
 
 const Routes: React.FC = () => {
   return (
     <Switch>
       <Route path="/" exact component={Login} />
-      <Route path="/register" component={Register} />
-      <Route path="/pre-register" component={PreRegister} />
-      <Route path="/recycler-register" component={RecyclerRegister} />
+      <Route path="/register" exact component={Register} />
+      <Route path="/pre-register" exact component={PreRegister} />
+      <Route path="/recycler-register" exact component={RecyclerRegister} />
+
+      <Route path="/recycler/dashboard" exact component={RecyclerDashboard} />
     </Switch>
   );
 };
