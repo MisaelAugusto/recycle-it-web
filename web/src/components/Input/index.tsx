@@ -29,7 +29,11 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
   }, []);
 
   return (
-    <Container isFocused={isFocused} isFilled={isFilled}>
+    <Container
+      isFocused={isFocused}
+      isFilled={isFilled}
+      data-testid="input-container"
+    >
       {Icon && <Icon size={24} />}
       <input
         {...rest}

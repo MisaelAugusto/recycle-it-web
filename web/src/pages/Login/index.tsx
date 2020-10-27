@@ -58,6 +58,10 @@ const Login: React.FC = () => {
     setTimeout(() => setChanged(false), 200);
   }, [userType]);
 
+  const handleSubmit = useCallback(() => {
+    console.log('Login!');
+  }, []);
+
   return (
     <div style={{}}>
       <Container changed={changed}>
@@ -82,7 +86,7 @@ const Login: React.FC = () => {
               type="password"
               placeholder="Senha"
             />
-            <Button>Entrar</Button>
+            <Button onClick={handleSubmit}>Entrar</Button>
           </Form>
           <Nav>
             <Link className="forgot-password" to="/">
