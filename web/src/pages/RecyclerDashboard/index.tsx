@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import {
   FaAward,
   FaBox,
@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import { FiPower } from 'react-icons/fi';
 
+import Route from '../../routes/Route';
 import CollectPoints from './CollectPoints';
 
 import {
@@ -110,6 +111,7 @@ const RecyclerDashboard: React.FC = () => {
                   key={route.path}
                   path={route.path}
                   children={<route.component />}
+                  isPrivate
                 />
               );
             })}
