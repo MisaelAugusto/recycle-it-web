@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export default class CreateRecyclers1603660451242
+export default class CreateCollectPoints1606333222396
   implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'recyclers',
+        name: 'collect_points',
         columns: [
           {
             name: 'id',
@@ -15,7 +15,7 @@ export default class CreateRecyclers1603660451242
             default: 'uuid_generate_v4()'
           },
           {
-            name: 'avatar',
+            name: 'image',
             type: 'varchar',
             isNullable: true
           },
@@ -24,17 +24,32 @@ export default class CreateRecyclers1603660451242
             type: 'varchar'
           },
           {
-            name: 'name_id',
-            type: 'varchar',
-            isUnique: true
-          },
-          {
             name: 'city',
             type: 'varchar',
             isNullable: true
           },
           {
             name: 'state',
+            type: 'varchar',
+            isNullable: true
+          },
+          {
+            name: 'latitude',
+            type: 'decimal',
+            isNullable: true
+          },
+          {
+            name: 'longitude',
+            type: 'decimal',
+            isNullable: true
+          },
+          {
+            name: 'whatsapp',
+            type: 'varchar',
+            isNullable: true
+          },
+          {
+            name: 'items',
             type: 'varchar',
             isNullable: true
           },
@@ -63,6 +78,6 @@ export default class CreateRecyclers1603660451242
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('recyclers');
+    await queryRunner.dropTable('collect_points');
   }
 }
