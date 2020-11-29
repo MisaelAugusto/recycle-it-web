@@ -1,47 +1,57 @@
-import { uuid } from 'uuidv4';
+import { Exclude, Expose } from 'class-transformer';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
-class CollectPoint {
+@Entity('collect_points')
+export default class CollectPoint {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
   image: string;
 
+  @Column()
   name: string;
 
-  email: string;
-
-  password: string;
-
+  @Column()
   city: string;
 
+  @Column()
   state: string;
 
+  @Column()
   items: string;
 
-  schedules: Array<{
-    weekDay: string;
-    start: string;
-    end: string;
-  }>;
+  @Column()
+  latitude: number;
 
-  constructor({
-    name,
-    email,
-    password,
-    city,
-    state,
-    items,
-    schedules
-  }: Omit<CollectPoint, 'id' | 'image'>) {
-    this.id = uuid();
-    this.image = '';
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.city = city;
-    this.state = state;
-    this.items = items;
-    this.schedules = schedules;
+  @Column()
+  longitude: number;
+
+  @Column()
+  email: string;
+
+  @Column()
+  @Exclude()
+  password: string;
+
+  @CreateDateColumn()
+  created_at: Date;
+
+  @UpdateDateColumn()
+  updated_at: Date;
+
+  @Expose({ name: 'image_url' })
+  getAvatarURL(): string | null {
+    if (!this.image) {
+      return null;
+    }
+
+    return `http://localhost:3333/uploads/${this.image}`;
   }
 }
-
-export default CollectPoint;

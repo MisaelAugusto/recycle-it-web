@@ -1,52 +1,46 @@
-import ICreateCollectPointDTO from '../dtos/ICreateCollectPointDTO';
+import { Repository, getRepository } from 'typeorm';
+
+import CreateCollectPointDTO from '@modules/collect-points/dtos/CreateCollectPointDTO';
 import CollectPoint from '../entities/CollectPoint';
 
-class CollectPointsRepository {
-  private collectPoints: CollectPoint[] = [];
+export default class CollectPointsRepository {
+  private ormRepository: Repository<CollectPoint>;
 
-  public findAll(): CollectPoint[] {
-    return this.collectPoints;
+  constructor() {
+    this.ormRepository = getRepository(CollectPoint);
   }
 
-  public findById(id: string): CollectPoint | undefined {
-    const findCollectPoint = this.collectPoints.find(
-      collectPoint => collectPoint.id === id
-    );
+  public async findAll(): Promise<CollectPoint[]> {
+    const collectPoints = await this.ormRepository.find();
 
-    return findCollectPoint;
+    return collectPoints;
   }
 
-  public findByEmail(email: string): CollectPoint | undefined {
-    const findCollectPoint = this.collectPoints.find(
-      collectPoint => collectPoint.email === email
-    );
-
-    return findCollectPoint;
-  }
-
-  public create({
-    name,
-    email,
-    password,
-    city,
-    state,
-    items,
-    schedules
-  }: ICreateCollectPointDTO): CollectPoint {
-    const collectPoint = new CollectPoint({
-      name,
-      email,
-      password,
-      city,
-      state,
-      items,
-      schedules
-    });
-
-    this.collectPoints.push(collectPoint);
+  public async findById(id: string): Promise<CollectPoint | undefined> {
+    const collectPoint = await this.ormRepository.findOne(id);
 
     return collectPoint;
   }
-}
 
-export default CollectPointsRepository;
+  public async findByEmail(email: string): Promise<CollectPoint | undefined> {
+    const collectPoint = await this.ormRepository.findOne({
+      where: { email }
+    });
+
+    return collectPoint;
+  }
+
+  public async create(
+    collectPointData: CreateCollectPointDTO
+  ): Promise<CollectPoint> {
+    const collectPoint = this.ormRepository.create(collectPointData);
+
+    await this.ormRepository.save(collectPoint);
+
+    return collectPoint;
+  }
+
+  public async save(collectPoint: CollectPoint): Promise<CollectPoint> {
+    return this.ormRepository.save(collectPoint);
+  }
+}

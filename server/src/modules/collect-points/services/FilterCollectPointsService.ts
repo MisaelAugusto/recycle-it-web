@@ -1,42 +1,52 @@
-import CollectPoint from '../entities/CollectPoint';
-import CollectPointsRepository from '../repositories/CollectPointsRepository';
+import { injectable, inject } from 'tsyringe';
+
+import CollectPoint from '../infra/typeorm/entities/CollectPoint';
+import CollectPointsRepository from '../infra/typeorm/repositories/CollectPointsRepository';
 
 interface Request {
-  name?: string;
-  city?: string;
-  state?: string;
+  name: string;
+  city: string;
+  state: string;
   items: string;
-  weekDay: string;
 }
 
+@injectable()
 class FilterCollectPointsService {
-  private collectPointsRepository: CollectPointsRepository;
+  constructor(
+    @inject('CollectPointsRepository')
+    private collectPointsRepository: CollectPointsRepository
+  ) {}
 
-  constructor(collectPointsRepository: CollectPointsRepository) {
-    this.collectPointsRepository = collectPointsRepository;
-  }
+  public async execute({
+    name,
+    city,
+    state,
+    items
+  }: Request): Promise<CollectPoint[]> {
+    let collectPoints = await this.collectPointsRepository.findAll();
 
-  public execute({
-    name = '',
-    city = '',
-    state = '',
-    items,
-    weekDay
-  }: Request): CollectPoint[] {
-    const collectPoints = this.collectPointsRepository.findAll();
+    if (name) {
+      collectPoints = collectPoints.filter(collectPoint =>
+        collectPoint.name.includes(name)
+      );
+    }
 
-    const filteredCollectPoints = collectPoints.filter(
-      collectPoint =>
-        collectPoint.name.includes(name) &&
-        collectPoint.city === city &&
-        collectPoint.state === state &&
+    if (city && state) {
+      collectPoints = collectPoints.filter(
+        collectPoint =>
+          collectPoint.city === city && collectPoint.state === state
+      );
+    }
+
+    if (items) {
+      collectPoints = collectPoints.filter(collectPoint =>
         items
-          .split('')
-          .every(item => collectPoint.items.split('').indexOf(item) !== -1) &&
-        collectPoint.schedules.some(schedule => schedule.weekDay === weekDay)
-    );
+          .split(',')
+          .some(item => collectPoint.items.split(',').includes(item))
+      );
+    }
 
-    return filteredCollectPoints;
+    return collectPoints;
   }
 }
 

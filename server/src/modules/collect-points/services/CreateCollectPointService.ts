@@ -1,60 +1,48 @@
-import { hash } from 'bcrypt';
+import { injectable, inject } from 'tsyringe';
+import AppError from '@shared/errors/AppError';
 
-import CollectPoint from '../entities/CollectPoint';
-import CollectPointsRepository from '../repositories/CollectPointsRepository';
+import HashProvider from '@shared/container/providers/HashProvider/BCryptHashProvider';
 
-interface Schedule {
-  weekDay: string;
-  start: string;
-  end: string;
-}
+import CollectPoint from '../infra/typeorm/entities/CollectPoint';
+import CollectPointsRepository from '../infra/typeorm/repositories/CollectPointsRepository';
 
 interface Request {
   name: string;
   email: string;
   password: string;
-  city: string;
-  state: string;
-  items: string;
-  schedules: Schedule[];
 }
 
-class CreateCollectPointService {
-  private collectPointsRepository: CollectPointsRepository;
+@injectable()
+export default class CreateRecyclerService {
+  constructor(
+    @inject('CollectPointsRepository')
+    private collectPointsRepository: CollectPointsRepository,
 
-  constructor(collectPointsRepository: CollectPointsRepository) {
-    this.collectPointsRepository = collectPointsRepository;
-  }
+    @inject('HashProvider')
+    private hashProvider: HashProvider
+  ) {}
 
   public async execute({
     name,
     email,
-    password,
-    city,
-    state,
-    items,
-    schedules
+    password
   }: Request): Promise<CollectPoint> {
-    const checkEmailExists = this.collectPointsRepository.findByEmail(email);
+    const checkCollectPointExists = await this.collectPointsRepository.findByEmail(
+      email
+    );
 
-    if (checkEmailExists) {
-      throw new Error('Email address already in use.');
+    if (checkCollectPointExists) {
+      throw new AppError('Email address already used.');
     }
 
-    const hashedPassword = await hash(password, 8);
+    const hashedPassword = await this.hashProvider.generateHash(password);
 
     const collectPoint = this.collectPointsRepository.create({
       name,
       email,
-      password: hashedPassword,
-      city,
-      state,
-      items,
-      schedules
+      password: hashedPassword
     });
 
     return collectPoint;
   }
 }
-
-export default CreateCollectPointService;

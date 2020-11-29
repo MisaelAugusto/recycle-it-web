@@ -1,56 +1,68 @@
 /* eslint-disable class-methods-use-this */
 import { Request, Response } from 'express';
 
-import CollectPointsRepository from '../repositories/CollectPointsRepository';
-import CreateCollectPointService from '../services/CreateCollectPointService';
-import FilterCollectPointsService from '../services/FilterCollectPointsService';
+import { container } from 'tsyringe';
+import { classToClass } from 'class-transformer';
 
-const collectPointsRepository = new CollectPointsRepository();
+import CreateCollectPointService from '@modules/collect-points/services/CreateCollectPointService';
+import UpdateCollectPointService from '@modules/collect-points/services/UpdateCollectPointService';
+import FilterCollectPointsService from '@modules/collect-points/services/FilterCollectPointsService';
 
 export default class CollectPointsController {
-  public index(request: Request, response: Response): Response {
-    const { name, items, weekDay } = request.query;
+  public async index(request: Request, response: Response): Promise<Response> {
+    const { name, items, city, state } = request.query;
 
-    const filterCollectPoints = new FilterCollectPointsService(
-      collectPointsRepository
-    );
+    const filterCollectPoints = container.resolve(FilterCollectPointsService);
 
-    const filteredCollectPoints = filterCollectPoints.execute({
+    const filteredCollectPoints = await filterCollectPoints.execute({
       name: String(name),
       items: String(items),
-      weekDay: String(weekDay)
+      city: String(city),
+      state: String(state)
     });
 
-    return response.status(200).json(filteredCollectPoints);
+    const parsedFilteredCollectPoints = filteredCollectPoints.map(
+      filteredCollectPoint => classToClass(filteredCollectPoint)
+    );
+
+    return response.status(200).json(parsedFilteredCollectPoints);
+  }
+
+  public async update(request: Request, response: Response): Promise<Response> {
+    try {
+      const { id } = request.user;
+      const { city, state, items, latitude, longitude } = request.body;
+
+      const updateCollectPoint = container.resolve(UpdateCollectPointService);
+
+      const collectPoint = await updateCollectPoint.execute({
+        id,
+        city,
+        state,
+        items,
+        latitude,
+        longitude
+      });
+
+      return response.json(classToClass(collectPoint));
+    } catch (error) {
+      return response.status(400).json({ error: error.message });
+    }
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
     try {
-      const {
-        name,
-        email,
-        password,
-        city,
-        state,
-        items,
-        schedules
-      } = request.body;
+      const { name, email, password } = request.body;
 
-      const createCollectPoint = new CreateCollectPointService(
-        collectPointsRepository
-      );
+      const createCollectPoint = container.resolve(CreateCollectPointService);
 
       const collectPoint = await createCollectPoint.execute({
         name,
         email,
-        password,
-        city,
-        state,
-        items,
-        schedules
+        password
       });
 
-      return response.status(201).json(collectPoint);
+      return response.status(201).json(classToClass(collectPoint));
     } catch (err) {
       return response.status(400).json({ error: err.message });
     }
