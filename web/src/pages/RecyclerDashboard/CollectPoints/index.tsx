@@ -13,8 +13,6 @@ import {
   Results
 } from './styles';
 
-// Filtrar por nome, items, horário de funcionamento
-
 const CollectPoints: React.FC = () => {
   return (
     <Container>

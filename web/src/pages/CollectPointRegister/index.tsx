@@ -3,13 +3,13 @@ import React, {
   useCallback,
   useEffect,
   ChangeEvent,
-  useRef
+  useRef,
+  FormEvent
 } from 'react';
 import { SiWhatsapp } from 'react-icons/si';
 import axios from 'axios';
 
-// import { Map, TileLayer, Marker } from 'react-leaflet';
-// import { LeafletMouseEvent } from 'leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 
 import * as Yup from 'yup';
 import { Form } from '@unform/web';
@@ -17,6 +17,7 @@ import { Form } from '@unform/web';
 import { useHistory } from 'react-router-dom';
 
 import { FormHandles } from '@unform/core';
+import { LeafletMouseEvent } from 'leaflet';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import Select from '../../components/Select';
@@ -24,7 +25,24 @@ import Select from '../../components/Select';
 import LogoImg from '../../assets/recycle-logo.png';
 import UserImage from '../../assets/icons/image.svg';
 
-import { Container, Content, Header, Logo, ImageInput } from './styles';
+import Paper from '../../assets/icons/paper.svg';
+import Plastic from '../../assets/icons/plastic.svg';
+import Glass from '../../assets/icons/glass.svg';
+import Metal from '../../assets/icons/metal.svg';
+import Organic from '../../assets/icons/organic.svg';
+
+import {
+  Container,
+  Content,
+  Header,
+  FormContent,
+  RightForm,
+  LeftForm,
+  ItemsContainer,
+  Item,
+  Logo,
+  ImageInput
+} from './styles';
 import { useAuth, CollectPoint } from '../../hooks/auth';
 import api from '../../services/api';
 import getValidationErrors from '../../utils/getValidationErrors';
@@ -42,6 +60,11 @@ interface IBGEStateResponse {
   sigla: string;
 }
 
+interface Position {
+  lat: number;
+  lng: number;
+}
+
 const CollectPointRegister: React.FC = () => {
   const history = useHistory();
   const { user, updateUser } = useAuth();
@@ -55,23 +78,25 @@ const CollectPointRegister: React.FC = () => {
 
   const [selectedUF, setSelectedUF] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
-
-  const [initialPosition, setInitialPosition] = useState<[number, number]>([
-    0,
-    0
-  ]);
-  const [selectedPosition, setSelectedPosition] = useState<[number, number]>([
-    0,
-    0
-  ]);
+  const [selectedItems, setSelectedItems] = useState([0, 0, 0, 0, 0]);
 
   const [submited, setSubmited] = useState(false);
+
+  const [initialPosition, setInitialPosition] = useState<Position>({
+    lat: -7.2171315,
+    lng: -35.911943
+  });
+
+  const [selectedPosition, setSelectedPosition] = useState<Position>({
+    lat: -7.2171315,
+    lng: -35.911943
+  });
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords;
 
-      setInitialPosition([latitude, longitude]);
+      setInitialPosition({ lat: latitude, lng: longitude });
     });
   }, []);
 
@@ -81,8 +106,6 @@ const CollectPointRegister: React.FC = () => {
         'https://servicodados.ibge.gov.br/api/v1/localidades/estados'
       )
       .then(response => {
-        console.log(response.data);
-
         setStates(response.data);
       });
   }, []);
@@ -130,9 +153,41 @@ const CollectPointRegister: React.FC = () => {
     [updateUser]
   );
 
-  // const handleMapClick = useCallback((event: LeafletMouseEvent) => {
-  //   setSelectedPosition([event.latlng.lat, event.latlng.lng]);
-  // }, []);
+  function LocationMarker() {
+    useMapEvents({
+      click(e: LeafletMouseEvent) {
+        const { lat, lng } = e.latlng;
+
+        setSelectedPosition({ lat, lng });
+      }
+    });
+
+    return <Marker position={selectedPosition} />;
+  }
+
+  const handleAddItem = useCallback(
+    (event: FormEvent, item: number) => {
+      event.preventDefault();
+
+      const items = [...selectedItems];
+
+      items[item] = (items[item] + 1) % 2;
+
+      setSubmited(false);
+      setSelectedItems(items);
+    },
+    [selectedItems]
+  );
+
+  const getSelectedItemsInString = useCallback(() => {
+    let itemsString = '';
+
+    selectedItems.forEach((item, index) => {
+      itemsString += item ? `${String(index + 1)},` : '';
+    });
+
+    return itemsString.substring(0, itemsString.length - 1);
+  }, [selectedItems]);
 
   const handleSubmit = useCallback(
     async ({ whatsapp }: FormData) => {
@@ -143,9 +198,14 @@ const CollectPointRegister: React.FC = () => {
           whatsapp: Yup.string().required('Whatsapp obrigatório')
         });
 
-        if (selectedUF && selectedCity && whatsapp) {
+        const hasItems = selectedItems.includes(1);
+
+        if (selectedUF && selectedCity && whatsapp && hasItems) {
           const data = {
             whatsapp,
+            items: getSelectedItemsInString(),
+            latitude: selectedPosition.lat,
+            longitude: selectedPosition.lng,
             city: selectedCity,
             state: states.find(state => state.sigla === selectedUF)?.nome
           };
@@ -175,7 +235,7 @@ const CollectPointRegister: React.FC = () => {
         }
       }
     },
-    [selectedUF, selectedCity, states, history, updateUser]
+    [selectedUF, selectedCity, states, selectedItems, history, updateUser]
   );
 
   return (
@@ -191,54 +251,123 @@ const CollectPointRegister: React.FC = () => {
           </p>
         </Header>
         <Form ref={formRef} onSubmit={handleSubmit}>
-          <ImageInput>
-            <label htmlFor="image">
-              <img
-                src={typedUser.image_url || UserImage}
-                alt="Imagem do usuário"
+          <FormContent>
+            <LeftForm>
+              <ImageInput>
+                <label htmlFor="image">
+                  <img
+                    src={typedUser.image_url || UserImage}
+                    alt="Imagem do usuário"
+                  />
+                  <input type="file" id="image" onChange={handleImageChange} />
+                </label>
+              </ImageInput>
+
+              <Select
+                error={selectedUF === '' && submited}
+                selected={selectedUF !== ''}
+                defaultOption="Selecione seu estado"
+                value={selectedUF}
+                options={states.map(state => {
+                  return { name: state.nome, value: state.sigla };
+                })}
+                onChange={event => handleSelectState(event)}
               />
-              <input type="file" id="image" onChange={handleImageChange} />
-            </label>
-          </ImageInput>
 
-          <Select
-            error={selectedUF === '' && submited}
-            selected={selectedUF !== ''}
-            defaultOption="Selecione seu estado"
-            value={selectedUF}
-            options={states.map(state => {
-              return { name: state.nome, value: state.sigla };
-            })}
-            onChange={event => handleSelectState(event)}
-          />
+              <Select
+                error={selectedCity === '' && submited}
+                selected={selectedCity !== ''}
+                defaultOption="Selecione sua cidade"
+                value={selectedCity}
+                options={cities.map(city => {
+                  return { name: city.nome, value: city.nome };
+                })}
+                onChange={event => handleSelectCity(event)}
+              />
 
-          <Select
-            error={selectedCity === '' && submited}
-            selected={selectedCity !== ''}
-            defaultOption="Selecione sua cidade"
-            value={selectedCity}
-            options={cities.map(city => {
-              return { name: city.nome, value: city.nome };
-            })}
-            onChange={event => handleSelectCity(event)}
-          />
+              <div className="whatsapp-input">
+                <Input
+                  icon={SiWhatsapp}
+                  name="whatsapp"
+                  type="tel"
+                  placeholder="83900000000"
+                />
+              </div>
+            </LeftForm>
 
-          <div className="whatsapp-input">
-            <Input
-              icon={SiWhatsapp}
-              name="whatsapp"
-              type="tel"
-              placeholder="83900000000"
-            />
-          </div>
+            <RightForm>
+              <ItemsContainer>
+                <Item
+                  type="button"
+                  selected={!!selectedItems[0]}
+                  onClick={event => handleAddItem(event, 0)}
+                  isErrored={!selectedItems.includes(1) && submited}
+                >
+                  <img src={Paper} alt="Papel" />
+                  <p>Papel</p>
+                </Item>
+                <Item
+                  type="button"
+                  selected={!!selectedItems[1]}
+                  onClick={event => handleAddItem(event, 1)}
+                  isErrored={!selectedItems.includes(1) && submited}
+                >
+                  <img src={Plastic} alt="Plástico" />
+                  <p>Plástico</p>
+                </Item>
+                <Item
+                  type="button"
+                  selected={!!selectedItems[2]}
+                  onClick={event => handleAddItem(event, 2)}
+                  isErrored={!selectedItems.includes(1) && submited}
+                >
+                  <img src={Glass} alt="Vidro" />
+                  <p>Vidro</p>
+                </Item>
+                <Item
+                  type="button"
+                  selected={!!selectedItems[3]}
+                  onClick={event => handleAddItem(event, 3)}
+                  isErrored={!selectedItems.includes(1) && submited}
+                >
+                  <img src={Metal} alt="Metal" />
+                  <p>Metal</p>
+                </Item>
+                <Item
+                  type="button"
+                  selected={!!selectedItems[4]}
+                  onClick={event => handleAddItem(event, 4)}
+                  isErrored={!selectedItems.includes(1) && submited}
+                >
+                  <img src={Organic} alt="Orgânico" />
+                  <p>Orgânico</p>
+                </Item>
+              </ItemsContainer>
 
-          <Button type="submit">Confirmar</Button>
+              <MapContainer
+                center={initialPosition}
+                zoom={15}
+                style={{
+                  width: '320px',
+                  height: '250px',
+                  fontSize: '8px',
+                  borderRadius: '8px',
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
 
-          {/* <Map center={initialPosition} zoom={15} onClick={handleMapClick}>
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <LocationMarker />
+              </MapContainer>
+            </RightForm>
+          </FormContent>
 
-            <Marker position={selectedPosition} />
-          </Map> */}
+          <Button type="submit" style={{ width: '16rem' }}>
+            Confirmar
+          </Button>
         </Form>
       </Content>
     </Container>
