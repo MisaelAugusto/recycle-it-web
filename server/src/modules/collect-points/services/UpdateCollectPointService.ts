@@ -9,6 +9,7 @@ interface Request {
   city: string;
   state: string;
   items: string;
+  whatsapp: string;
   latitude: number;
   longitude: number;
 }
@@ -25,6 +26,7 @@ export default class UpdateCollectPointService {
     city,
     state,
     items,
+    whatsapp,
     latitude,
     longitude
   }: Request): Promise<CollectPoint> {
@@ -37,6 +39,7 @@ export default class UpdateCollectPointService {
     collectPoint.city = city;
     collectPoint.state = state;
     collectPoint.items = items;
+    collectPoint.whatsapp = whatsapp;
     collectPoint.latitude = latitude;
     collectPoint.longitude = longitude;
 

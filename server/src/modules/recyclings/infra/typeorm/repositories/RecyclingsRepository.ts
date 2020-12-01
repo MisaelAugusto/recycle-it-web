@@ -10,20 +10,16 @@ export default class RecyclingsRepository {
     this.ormRepository = getRepository(Recycling);
   }
 
+  public async findAll(): Promise<Recycling[]> {
+    const recyclings = await this.ormRepository.find();
+
+    return recyclings;
+  }
+
   public async findById(id: string): Promise<Recycling | undefined> {
     const recycling = await this.ormRepository.findOne(id);
 
     return recycling;
-  }
-
-  public async findAllByCollectPoint(
-    collect_point_id: string
-  ): Promise<Recycling[]> {
-    const recyclings = await this.ormRepository.find({
-      where: { collect_point_id, finished: 0 }
-    });
-
-    return recyclings;
   }
 
   public async findByCollectPointAndRecycler(

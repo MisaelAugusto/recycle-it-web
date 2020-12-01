@@ -8,13 +8,14 @@ import AuthenticateUserService from '@shared/services/AuthenticateUserService';
 export default class SessionsController {
   public async create(request: Request, response: Response): Promise<Response> {
     try {
-      const { email, password } = request.body;
+      const { userType, email, password } = request.body;
 
       const authenticateUser = container.resolve(AuthenticateUserService);
 
       const { user, token } = await authenticateUser.execute({
         email,
-        password
+        password,
+        userType
       });
 
       return response.json({ user: classToClass(user), token });

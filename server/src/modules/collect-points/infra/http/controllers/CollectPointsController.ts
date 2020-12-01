@@ -31,7 +31,14 @@ export default class CollectPointsController {
   public async update(request: Request, response: Response): Promise<Response> {
     try {
       const { id } = request.user;
-      const { city, state, items, latitude, longitude } = request.body;
+      const {
+        city,
+        state,
+        items,
+        whatsapp,
+        latitude,
+        longitude
+      } = request.body;
 
       const updateCollectPoint = container.resolve(UpdateCollectPointService);
 
@@ -40,6 +47,7 @@ export default class CollectPointsController {
         city,
         state,
         items,
+        whatsapp,
         latitude,
         longitude
       });

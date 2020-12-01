@@ -2,22 +2,22 @@ import { Request, Response } from 'express';
 
 import { container } from 'tsyringe';
 
+import FilterRecyclingsService from '@modules/recyclings/services/FilterRecyclingsService';
 import CreateRecyclingService from '@modules/recyclings/services/CreateRecyclingService';
 import FinishRecyclingService from '@modules/recyclings/services/FinishRecyclingService';
 import DeleteRecyclingService from '@modules/recyclings/services/DeleteRecyclingService';
-import ListCollectPointRecyclingsService from '@modules/recyclings/services/ListCollectPointRecyclingsService';
 
 export default class RecyclingsController {
   public async show(request: Request, response: Response): Promise<Response> {
     try {
-      const collect_point_id = request.user.id;
+      const user_id = request.user.id;
+      const { userType } = request.query;
 
-      const listRecyclings = container.resolve(
-        ListCollectPointRecyclingsService
-      );
+      const filterRecyclings = container.resolve(FilterRecyclingsService);
 
-      const recyclings = await listRecyclings.execute({
-        collect_point_id
+      const recyclings = await filterRecyclings.execute({
+        user_id,
+        userType: String(userType)
       });
 
       return response.json(recyclings);

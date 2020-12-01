@@ -34,6 +34,9 @@ export default class CollectPoint {
   longitude: number;
 
   @Column()
+  whatsapp: string;
+
+  @Column()
   email: string;
 
   @Column()

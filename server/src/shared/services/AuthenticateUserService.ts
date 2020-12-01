@@ -13,6 +13,7 @@ import Recycler from '@modules/recyclers/infra/typeorm/entities/Recycler';
 interface Request {
   email: string;
   password: string;
+  userType: string;
 }
 
 interface Response {
@@ -33,19 +34,21 @@ export default class AuthenticateUserService {
     private hashProvider: HashProvider
   ) {}
 
-  public async execute({ email, password }: Request): Promise<Response> {
-    const recycler = await this.recyclersRepository.findByEmail(email);
-    const collectPoint = await this.collectPointsRepository.findByEmail(email);
-
+  public async execute({
+    userType,
+    email,
+    password
+  }: Request): Promise<Response> {
     let user;
-    if (!recycler) {
-      if (!collectPoint) {
-        throw new AppError('Incorrect email/password combination.', 401);
-      } else {
-        user = collectPoint;
-      }
-    } else {
-      user = recycler;
+
+    if (userType === 'recycler') {
+      user = await this.recyclersRepository.findByEmail(email);
+    } else if (userType === 'collect-point') {
+      user = await this.collectPointsRepository.findByEmail(email);
+    }
+
+    if (!user) {
+      throw new AppError('Incorrect email/password combination.', 401);
     }
 
     const passwordMatch = await this.hashProvider.compareHash(
