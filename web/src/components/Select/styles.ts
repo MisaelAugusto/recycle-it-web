@@ -1,10 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import DropDown from '../../assets/icons/dropdown.svg';
 import SelectedDropDown from '../../assets/icons/selected-dropdown.svg';
 
 interface SelectProps {
   selected: boolean;
+  isErrored: boolean;
 }
 
 export const Container = styled.select<SelectProps>`
@@ -29,4 +30,10 @@ export const Container = styled.select<SelectProps>`
   &::-ms-expand {
     display: none;
   }
+
+  ${props =>
+    props.isErrored &&
+    css`
+      border: 2px solid #c53030;
+    `}
 `;

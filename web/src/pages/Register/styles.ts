@@ -37,6 +37,13 @@ export const Content = styled.div`
     color: #000000;
     text-decoration: none;
   }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1.6rem 0 0 0;
+  }
 `;
 
 export const Header = styled.header`
@@ -51,13 +58,6 @@ export const Logo = styled.div`
     font-size: 3.2rem;
     margin-left: 1.6rem;
   }
-`;
-
-export const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 1.6rem 0 0 0;
 `;
 
 export const Nav = styled.nav`

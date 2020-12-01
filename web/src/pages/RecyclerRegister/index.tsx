@@ -1,7 +1,14 @@
-import React, { useState, useCallback, useEffect, ChangeEvent } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  ChangeEvent,
+  FormEvent
+} from 'react';
 import { FiCamera } from 'react-icons/fi';
 import axios from 'axios';
 
+import { useHistory } from 'react-router-dom';
 import Button from '../../components/Button';
 import Select from '../../components/Select';
 
@@ -9,6 +16,8 @@ import LogoImg from '../../assets/recycle-logo.png';
 import UserAvatar from '../../assets/icons/avatar.svg';
 
 import { Container, Content, Header, Logo, Form, AvatarInput } from './styles';
+import { useAuth, Recycler } from '../../hooks/auth';
+import api from '../../services/api';
 
 interface IBGECityResponse {
   nome: string;
@@ -20,11 +29,18 @@ interface IBGEStateResponse {
 }
 
 const RecyclerRegister: React.FC = () => {
+  const history = useHistory();
+  const { user, updateUser } = useAuth();
+
+  const typedUser = user as Recycler;
+
   const [cities, setCities] = useState<IBGECityResponse[]>([]);
   const [states, setStates] = useState<IBGEStateResponse[]>([]);
 
   const [selectedUF, setSelectedUF] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
+
+  const [submited, setSubmited] = useState(false);
 
   useEffect(() => {
     axios
@@ -47,6 +63,7 @@ const RecyclerRegister: React.FC = () => {
       const uf = event.target.value;
 
       setSelectedUF(uf);
+      setSubmited(false);
       setSelectedCity('');
     },
     []
@@ -55,14 +72,48 @@ const RecyclerRegister: React.FC = () => {
     (event: ChangeEvent<HTMLSelectElement>) => {
       const city = event.target.value;
 
+      setSubmited(false);
       setSelectedCity(city);
     },
     []
   );
 
-  const handleAvatarChange = useCallback(() => {
-    // TODO
-  }, []);
+  const handleAvatarChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files) {
+        const data = new FormData();
+
+        data.append('avatar', event.target.files[0]);
+
+        api.patch('recyclers/avatar', data).then(response => {
+          updateUser(response.data);
+        });
+      }
+    },
+    [updateUser]
+  );
+
+  const handleSubmit = useCallback(
+    async (event: FormEvent) => {
+      event.preventDefault();
+
+      if (selectedUF && selectedCity) {
+        const data = {
+          city: selectedCity,
+          state: states.find(state => state.sigla === selectedUF)?.nome
+        };
+
+        await api.put('/recyclers', data).then(response => {
+          updateUser(response.data);
+        });
+
+        history.push('/recycler/dashboard');
+      }
+
+      setSubmited(true);
+    },
+    [selectedUF, selectedCity, states, history, updateUser]
+  );
 
   return (
     <Container>
@@ -74,9 +125,12 @@ const RecyclerRegister: React.FC = () => {
           </Logo>
           <p>Seja a mudança que deseja ver no mundo.</p>
         </Header>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <AvatarInput>
-            <img src={UserAvatar} alt="Avatar do usuário" />
+            <img
+              src={typedUser.avatar_url || UserAvatar}
+              alt="Avatar do usuário"
+            />
             <label htmlFor="avatar">
               <FiCamera />
               <input type="file" id="avatar" onChange={handleAvatarChange} />
@@ -84,6 +138,7 @@ const RecyclerRegister: React.FC = () => {
           </AvatarInput>
 
           <Select
+            error={selectedUF === '' && submited}
             selected={selectedUF !== ''}
             defaultOption="Selecione seu estado"
             value={selectedUF}
@@ -94,6 +149,7 @@ const RecyclerRegister: React.FC = () => {
           />
 
           <Select
+            error={selectedCity === '' && submited}
             selected={selectedCity !== ''}
             defaultOption="Selecione sua cidade"
             value={selectedCity}
@@ -102,7 +158,7 @@ const RecyclerRegister: React.FC = () => {
             })}
             onChange={event => handleSelectCity(event)}
           />
-          <Button>Confirmar</Button>
+          <Button type="submit">Confirmar</Button>
         </Form>
       </Content>
     </Container>

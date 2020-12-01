@@ -4,33 +4,38 @@ import api from '../services/api';
 interface User {
   id: string;
   name: string;
-  email: string;
-  // avatar: string; or avatar_url
-}
-
-interface Recycler extends User {
-  state: string;
   city: string;
+  state: string;
+  email: string;
 }
 
-interface CollectPoint extends User {
-  // phone: string; or whatsapp
+export interface Recycler extends User {
+  name_id: string;
+  avatar_url: string;
+}
+
+export interface CollectPoint extends User {
+  whatsapp: string;
   latitude: number;
   longitude: number;
+  image_url: string;
 }
 
 interface AuthState {
   token: string;
   user: Recycler | CollectPoint;
+  userType: string;
 }
 
 interface SignInCredentials {
   email: string;
   password: string;
+  userType: 'recycler' | 'collect-point';
 }
 
 interface AuthContextData {
   user: Recycler | CollectPoint;
+  userType: string;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: Recycler | CollectPoint): void;
@@ -40,37 +45,45 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@RecycleIt:token');
     const user = localStorage.getItem('@RecycleIt:user');
+    const token = localStorage.getItem('@RecycleIt:token');
+    const userType = localStorage.getItem('@RecycleIt:userType');
 
-    if (token && user) {
+    if (token && user && userType) {
       api.defaults.headers.authorization = `Bearer ${token}`;
 
-      return { token, user: JSON.parse(user) };
+      return {
+        token,
+        user: JSON.parse(user),
+        userType
+      };
     }
 
     return {} as AuthState;
   });
 
-  const signIn = useCallback(async ({ email, password }) => {
+  const signIn = useCallback(async ({ email, password, userType }) => {
     const response = await api.post('sessions', {
       email,
-      password
+      password,
+      userType
     });
 
     const { token, user } = response.data;
 
     localStorage.setItem('@RecycleIt:token', token);
+    localStorage.setItem('@RecycleIt:userType', userType);
     localStorage.setItem('@RecycleIt:user', JSON.stringify(user));
 
     api.defaults.headers.authorization = `Bearer ${token}`;
 
-    setData({ token, user });
+    setData({ token, user, userType });
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@RecycleIt:token');
     localStorage.removeItem('@RecycleIt:user');
+    localStorage.removeItem('@RecycleIt:token');
+    localStorage.removeItem('@RecycleIt:userType');
 
     setData({} as AuthState);
   }, []);
@@ -81,15 +94,22 @@ const AuthProvider: React.FC = ({ children }) => {
 
       setData({
         token: data.token,
-        user
+        user,
+        userType: data.userType
       });
     },
-    [setData, data.token]
+    [setData, data.token, data.userType]
   );
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser }}
+      value={{
+        user: data.user,
+        userType: data.userType,
+        signIn,
+        signOut,
+        updateUser
+      }}
     >
       {children}
     </AuthContext.Provider>

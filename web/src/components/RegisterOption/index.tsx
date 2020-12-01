@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React, { useState, useCallback } from 'react';
 
 import OptionFooterImg from '../../assets/option-footer.png';
@@ -13,7 +14,13 @@ interface RegisterOptionProps {
   text: string[];
 }
 
-const RegisterOption: React.FC<RegisterOptionProps> = ({ to, image, color, title, text }) => {
+const RegisterOption: React.FC<RegisterOptionProps> = ({
+  to,
+  image,
+  color,
+  title,
+  text
+}) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleOptionFocus = useCallback(() => {
@@ -28,7 +35,7 @@ const RegisterOption: React.FC<RegisterOptionProps> = ({ to, image, color, title
     <Container>
       <p>
         Quero ser um
-        <span style={{ color: `${color}` }}> {title}</span>
+        <span style={{ color: `${color}` }}> {title} </span>
       </p>
       <Option
         to={to}
@@ -48,7 +55,7 @@ const RegisterOption: React.FC<RegisterOptionProps> = ({ to, image, color, title
             <span style={{ color: '#1dbc5c' }}> {text[5]}</span>.
           </p>
           <img
-            src={(isFocused) ? HighlightedOptionFooterImg : OptionFooterImg}
+            src={isFocused ? HighlightedOptionFooterImg : OptionFooterImg}
             alt="Fundo do texto"
           />
         </div>

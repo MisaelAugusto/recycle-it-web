@@ -17,7 +17,7 @@ const Route: React.FC<RouteProps> = ({
   component: Component,
   ...rest
 }) => {
-  const { user } = useAuth();
+  const { user, userType } = useAuth();
 
   return (
     <ReactDOMRoute
@@ -28,7 +28,12 @@ const Route: React.FC<RouteProps> = ({
         ) : (
           <Redirect
             to={{
-              pathname: isPrivate ? '/' : '/recycler/dashboard',
+              // eslint-disable-next-line no-nested-ternary
+              pathname: isPrivate
+                ? '/'
+                : user.city
+                ? `/${userType}/dashboard`
+                : `/${userType}-register`,
               state: { from: location }
             }}
           />

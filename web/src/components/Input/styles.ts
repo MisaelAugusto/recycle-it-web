@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components';
 
 interface ContainerProps {
-  isFocused: boolean;
   isFilled: boolean;
+  isFocused: boolean;
+  isErrored: boolean;
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -29,6 +30,13 @@ export const Container = styled.div<ContainerProps>`
     props.isFilled &&
     css`
       color: #1dbc5c;
+    `}
+
+  ${props =>
+    props.isErrored &&
+    css`
+      color: #c53030;
+      border: 2px solid #c53030;
     `}
 
   &:hover {

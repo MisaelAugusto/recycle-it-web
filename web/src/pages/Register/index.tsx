@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { FiMail, FiLock, FiLogOut, FiUser } from 'react-icons/fi';
+
+import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
+import * as Yup from 'yup';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -10,37 +14,42 @@ import LogoImg from '../../assets/recycle-logo.png';
 import RecyclerImg from '../../assets/recycler-foreground.png';
 import CollectPointImg from '../../assets/collect-point-foreground.png';
 
-import {
-  Container,
-  Content,
-  Header,
-  Logo,
-  Form,
-  Nav,
-  Foreground
-} from './styles';
+import { Container, Content, Header, Logo, Nav, Foreground } from './styles';
+import getValidationErrors from '../../utils/getValidationErrors';
+
+import api from '../../services/api';
+
+interface SignUpFormData {
+  name: string;
+  email: string;
+  password: string;
+}
 
 interface UserType {
   type: string;
-  text: string;
   image: string;
   altImg: string;
 }
 
 const recycler = {
+  type: 'recycler',
   image: RecyclerImg,
   altImg: 'Pessoas reciclando juntas'
 } as UserType;
 
 const collectPoint = {
+  type: 'collect-point',
   image: CollectPointImg,
   altImg: 'Ponto de coleta'
 } as UserType;
 
 const Register: React.FC = () => {
-  const [userType, setUserType] = useState<UserType>(recycler);
-
+  const history = useHistory();
   const location = useLocation();
+
+  const formRef = useRef<FormHandles>(null);
+
+  const [userType, setUserType] = useState<UserType>(recycler);
 
   useEffect(() => {
     const user = location.search.replace('?user=', '');
@@ -49,6 +58,40 @@ const Register: React.FC = () => {
       setUserType(collectPoint);
     }
   }, [location]);
+
+  const handleSubmit = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
+
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string()
+            .required('Senha obrigatória')
+            .min(8, 'Mínimo de 8 caracteres')
+            .max(16, 'Máximo de 16 caracteres')
+        });
+
+        await schema.validate(data, {
+          abortEarly: false
+        });
+
+        await api.post(`/${userType.type}s`, data);
+
+        history.push(`/${userType.type}-register`);
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+        }
+      }
+    },
+    [history, userType]
+  );
 
   return (
     <div style={{}}>
@@ -63,7 +106,7 @@ const Register: React.FC = () => {
               <p>Recycle it</p>
             </Logo>
           </Header>
-          <Form>
+          <Form ref={formRef} onSubmit={handleSubmit}>
             <Input icon={FiUser} name="name" type="text" placeholder="Name" />
             <Input
               icon={FiMail}
@@ -77,7 +120,7 @@ const Register: React.FC = () => {
               type="password"
               placeholder="Senha"
             />
-            <Button>Cadastrar</Button>
+            <Button type="submit">Cadastrar</Button>
           </Form>
           <Nav>
             <Link className="back-to-login" to="/">
