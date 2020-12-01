@@ -7,6 +7,3 @@
 # uploads
 **/uploads/*
 !**/uploads/.gitkeep
-
-# database
-**/database.sqlite
