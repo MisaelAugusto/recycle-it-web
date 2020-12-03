@@ -11,7 +11,7 @@ export default class RecyclersRepository {
   }
 
   public async findById(id: string): Promise<Recycler | undefined> {
-    const recycler = await this.ormRepository.findOne(id);
+    const recycler = await this.ormRepository.findOne({ where: { id } });
 
     return recycler;
   }

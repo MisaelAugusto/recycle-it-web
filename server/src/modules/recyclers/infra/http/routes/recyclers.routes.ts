@@ -12,6 +12,7 @@ const upload = multer(uploadConfig);
 const recyclersController = new RecyclersController();
 const recyclerAvatarController = new RecyclerAvatarController();
 
+recyclersRouter.get('/:id', recyclersController.index);
 recyclersRouter.post('/', recyclersController.create);
 recyclersRouter.put('/', ensureAuthenticated, recyclersController.update);
 recyclersRouter.patch(
