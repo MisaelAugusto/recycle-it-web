@@ -18,7 +18,7 @@
 
 <h2 id="preview">📽️ Preview</h2>
 
-<img src="https://ik.imagekit.io/ocq8ayf2ug/recycle-it-preview_jXiQtGXmE.gif" alt="Demonstração do Recycle It" />
+<img src="recycle-it-preview.gif" alt="Demonstração do Recycle It" />
 
 <h2 id="technologies">💻️ Technologies</h2>
 <ul>
