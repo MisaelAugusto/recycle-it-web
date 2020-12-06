@@ -25,21 +25,63 @@ Trabalhando nisso...
   <li>🌐️ Web:</li>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Frontend: React</li></div>
   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Backend: NodeJs</li></div>
-  <li>💾️ Banco de dados: Knex e Sqlite3</li>
+  <li>💾️ Banco de dados: Typeorm e Sqlite3</li>
   <li>⌨️ Linguagem de programação: Typescript</li>
 </ul>
 
 <h2 id="how-to-use">👨🏽‍💻️ Como utilizar</h2>
-<h3>1. FIRST INSTRUCTION:</h3>
+
+<h3>1. Baixe o projeto:</h3>
 
 ```
-  CODE TO USE THE PROJECT
+  # Se você usa HTTPS
+  git clone https://github.com/MisaelAugusto/recycle-it.git
+
+  # Se você usa SSH
+  git clone git@github.com:MisaelAugusto/recycle-it.git
 ```
 
+<h3>2. Instale as dependências:</h3>
+
+```
+  # vá para o diretório do projeto
+  cd recycle-it
+
+  # vá para cada pasta do projeto e instale as depedências
+  cd server
+  yarn install
+
+  cd ../web
+  yarn install
+```
+
+<h3>3. Execute o backend:</h3>
+
+```
+  # vá para o diretório do backend
+  cd server
+
+  # inicie o backend
+  yarn start
+
+  # mantenha em execução em uma aba do terminal separada
+```
+
+<h3>4. Execute o projeto:</h3>
+
+```
+  # vá para o diretório do frontend
+  cd web
+
+  # inicie o frontend
+  yarn start
+
+  # acesse http://localhost:3000 no seu navegador
+```
 <h2 id="info">📌️ Informação adicional</h2>
 <h3 id="status">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;🔎️ Status do projeto</h3>
 <p>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O projeto está em andamento. ⏳️</p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;O projeto está finalizado. ✔️</p>
 
 <h3 id="contributing">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📊️ Contribuição</h3>
 <p>
