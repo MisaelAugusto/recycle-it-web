@@ -8,12 +8,14 @@ import {
 import { useAuth } from '../hooks/auth';
 
 interface RouteProps extends ReactDOMRouteProps {
+  path: string;
   isPrivate?: boolean;
   component?: React.ComponentType;
 }
 
 const Route: React.FC<RouteProps> = ({
   isPrivate = false,
+  path,
   component: Component,
   ...rest
 }) => {
@@ -23,17 +25,22 @@ const Route: React.FC<RouteProps> = ({
     <ReactDOMRoute
       {...rest}
       render={({ location }) => {
-        return isPrivate === !!user ? (
+        let redirectPath;
+
+        if (user) {
+          redirectPath = `/${userType}${
+            user.city ? '/dashboard' : '-register'
+          }`;
+        } else {
+          redirectPath = isPrivate ? '/' : path;
+        }
+
+        return redirectPath === path ? (
           Component && <Component />
         ) : (
           <Redirect
             to={{
-              // eslint-disable-next-line no-nested-ternary
-              pathname: isPrivate
-                ? '/'
-                : user.city
-                ? `/${userType}/dashboard`
-                : `/${userType}-register`,
+              pathname: redirectPath,
               state: { from: location }
             }}
           />

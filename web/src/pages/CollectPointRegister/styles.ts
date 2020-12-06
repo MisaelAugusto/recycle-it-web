@@ -59,6 +59,7 @@ export const LeftForm = styled.div`
     }
   }
 `;
+
 export const RightForm = styled.div``;
 
 export const ItemsContainer = styled.div`
@@ -73,7 +74,7 @@ export const Item = styled.button<ItemProps>`
   width: 3.6rem;
   height: 4.4rem;
   border-radius: 0.4rem;
-  background: #dbf5e5;
+  background: #f6f6f6;
   transition: transform 0.2s;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 
@@ -90,6 +91,7 @@ export const Item = styled.button<ItemProps>`
     props.selected &&
     css`
       border: 2px solid #1dbc5c;
+      background-color: #ddffdd;
     `}
 
   ${props =>

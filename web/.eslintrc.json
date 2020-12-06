@@ -47,7 +47,9 @@
     "react/prop-types": "off",
     "no-unused-expressions": "off",
     "react/no-children-prop": "off",
-    "camelcase": "off"
+    "camelcase": "off",
+    "no-alert": "off",
+    "jsx-a11y/label-has-associated-control": "off"
   },
   "settings": {
     "import/resolver": {

@@ -56,7 +56,7 @@ const Login: React.FC = () => {
   const history = useHistory();
   const formRef = useRef<FormHandles>(null);
 
-  const { user, signIn } = useAuth();
+  const { signIn } = useAuth();
 
   const [changed, setChanged] = useState(false);
   const [userType, setUserType] = useState<UserType>(recycler);
@@ -98,18 +98,20 @@ const Login: React.FC = () => {
           userType: userType.type
         });
 
-        history.push(
-          `/${userType.type}${user.city ? '/dashboard' : '-register'}`
-        );
+        history.push(`/${userType.type}-register`);
       } catch (err) {
+        console.log(err);
+
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
 
           formRef.current?.setErrors(errors);
+        } else {
+          alert('Erro ao fazer o login, verifique suas credenciais!');
         }
       }
     },
-    [user, signIn, history, userType]
+    [signIn, history, userType]
   );
 
   return (

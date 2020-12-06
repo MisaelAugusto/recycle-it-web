@@ -87,6 +87,8 @@ const Register: React.FC = () => {
           const errors = getValidationErrors(err);
 
           formRef.current?.setErrors(errors);
+        } else {
+          alert('Erro ao criar usuário, e-mail já cadastrado!');
         }
       }
     },

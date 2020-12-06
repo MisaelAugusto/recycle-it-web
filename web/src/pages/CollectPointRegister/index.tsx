@@ -65,6 +65,14 @@ interface Position {
   lng: number;
 }
 
+const itemImages = [
+  { source: Paper, alt: 'Papel' },
+  { source: Plastic, alt: 'Plástico' },
+  { source: Glass, alt: 'Vidro' },
+  { source: Metal, alt: 'Metal' },
+  { source: Organic, alt: 'Orgânico' }
+];
+
 const CollectPointRegister: React.FC = () => {
   const history = useHistory();
   const { user, updateUser } = useAuth();
@@ -235,7 +243,16 @@ const CollectPointRegister: React.FC = () => {
         }
       }
     },
-    [selectedUF, selectedCity, states, selectedItems, history, updateUser]
+    [
+      selectedUF,
+      selectedCity,
+      states,
+      selectedItems,
+      selectedPosition,
+      history,
+      updateUser,
+      getSelectedItemsInString
+    ]
   );
 
   return (
@@ -297,51 +314,20 @@ const CollectPointRegister: React.FC = () => {
 
             <RightForm>
               <ItemsContainer>
-                <Item
-                  type="button"
-                  selected={!!selectedItems[0]}
-                  onClick={event => handleAddItem(event, 0)}
-                  isErrored={!selectedItems.includes(1) && submited}
-                >
-                  <img src={Paper} alt="Papel" />
-                  <p>Papel</p>
-                </Item>
-                <Item
-                  type="button"
-                  selected={!!selectedItems[1]}
-                  onClick={event => handleAddItem(event, 1)}
-                  isErrored={!selectedItems.includes(1) && submited}
-                >
-                  <img src={Plastic} alt="Plástico" />
-                  <p>Plástico</p>
-                </Item>
-                <Item
-                  type="button"
-                  selected={!!selectedItems[2]}
-                  onClick={event => handleAddItem(event, 2)}
-                  isErrored={!selectedItems.includes(1) && submited}
-                >
-                  <img src={Glass} alt="Vidro" />
-                  <p>Vidro</p>
-                </Item>
-                <Item
-                  type="button"
-                  selected={!!selectedItems[3]}
-                  onClick={event => handleAddItem(event, 3)}
-                  isErrored={!selectedItems.includes(1) && submited}
-                >
-                  <img src={Metal} alt="Metal" />
-                  <p>Metal</p>
-                </Item>
-                <Item
-                  type="button"
-                  selected={!!selectedItems[4]}
-                  onClick={event => handleAddItem(event, 4)}
-                  isErrored={!selectedItems.includes(1) && submited}
-                >
-                  <img src={Organic} alt="Orgânico" />
-                  <p>Orgânico</p>
-                </Item>
+                {itemImages.map((item, index) => {
+                  return (
+                    <Item
+                      key={item.alt}
+                      type="button"
+                      selected={!!selectedItems[index]}
+                      onClick={event => handleAddItem(event, index)}
+                      isErrored={!selectedItems.includes(1) && submited}
+                    >
+                      <img src={item.source} alt={item.alt} />
+                      <p>{item.alt}</p>
+                    </Item>
+                  );
+                })}
               </ItemsContainer>
 
               <MapContainer
@@ -365,7 +351,7 @@ const CollectPointRegister: React.FC = () => {
             </RightForm>
           </FormContent>
 
-          <Button type="submit" style={{ width: '16rem' }}>
+          <Button type="submit" style={{ width: '16rem', marginTop: '1.6rem' }}>
             Confirmar
           </Button>
         </Form>
