@@ -13,7 +13,11 @@ export default class CollectPointsRepository {
   public async findAll(): Promise<CollectPoint[]> {
     const collectPoints = await this.ormRepository.find();
 
-    return collectPoints;
+    const registeredCollectPoints = collectPoints.filter(
+      collectPoint => collectPoint.city && collectPoint.state
+    );
+
+    return registeredCollectPoints;
   }
 
   public async findById(id: string): Promise<CollectPoint | undefined> {

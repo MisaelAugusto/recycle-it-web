@@ -8,7 +8,7 @@ const recyclingsRouter = Router();
 const recyclingsController = new RecyclingsController();
 
 recyclingsRouter.get('/', ensureAuthenticated, recyclingsController.show);
-recyclingsRouter.put('/', ensureAuthenticated, recyclingsController.update);
+recyclingsRouter.put('/:id', ensureAuthenticated, recyclingsController.update);
 recyclingsRouter.post('/', ensureAuthenticated, recyclingsController.create);
 recyclingsRouter.delete(
   '/:id',

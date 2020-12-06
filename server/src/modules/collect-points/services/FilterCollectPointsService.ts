@@ -27,7 +27,7 @@ class FilterCollectPointsService {
 
     if (name) {
       collectPoints = collectPoints.filter(collectPoint =>
-        collectPoint.name.includes(name)
+        collectPoint.name.toLowerCase().includes(name.toLowerCase())
       );
     }
 

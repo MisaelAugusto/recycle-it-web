@@ -26,11 +26,13 @@ export default class CreateRecyclerService {
       items
     );
 
-    const checkIsRecyclerRecyclings = recyclingsWithItems.some(
-      recycling => recycling.recycler_id === recycler_id
+    const checkIsSameRecycling = recyclingsWithItems.some(
+      recycling =>
+        recycling.recycler_id === recycler_id &&
+        recycling.collect_point_id === collect_point_id
     );
 
-    if (checkIsRecyclerRecyclings) {
+    if (checkIsSameRecycling) {
       throw new AppError(
         'There is another recycling with some of these items.',
         401

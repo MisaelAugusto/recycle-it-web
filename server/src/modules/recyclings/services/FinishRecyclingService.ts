@@ -5,8 +5,7 @@ import Recycling from '../infra/typeorm/entities/Recycling';
 import RecyclingsRepository from '../infra/typeorm/repositories/RecyclingsRepository';
 
 interface Request {
-  recycler_id: string;
-  collect_point_id: string;
+  id: string;
   quantities: string;
 }
 
@@ -17,15 +16,8 @@ export default class FinishRecyclingService {
     private recyclingsRepository: RecyclingsRepository
   ) {}
 
-  public async execute({
-    recycler_id,
-    collect_point_id,
-    quantities
-  }: Request): Promise<Recycling> {
-    const recycling = await this.recyclingsRepository.findByCollectPointAndRecycler(
-      recycler_id,
-      collect_point_id
-    );
+  public async execute({ id, quantities }: Request): Promise<Recycling> {
+    const recycling = await this.recyclingsRepository.findById(id);
 
     if (!recycling) {
       throw new AppError(

@@ -47,14 +47,13 @@ export default class RecyclingsController {
 
   public async update(request: Request, response: Response): Promise<Response> {
     try {
-      const collect_point_id = request.user.id;
-      const { recycler_id, quantities } = request.body;
+      const { quantities } = request.body;
+      const { id } = request.params;
 
       const finishRecycling = container.resolve(FinishRecyclingService);
 
       const recycling = await finishRecycling.execute({
-        collect_point_id,
-        recycler_id,
+        id,
         quantities
       });
 
