@@ -15,6 +15,7 @@ export interface Recycler extends User {
 }
 
 export interface CollectPoint extends User {
+  items: string;
   whatsapp: string;
   latitude: number;
   longitude: number;
@@ -63,13 +64,13 @@ const AuthProvider: React.FC = ({ children }) => {
   });
 
   const signIn = useCallback(async ({ email, password, userType }) => {
-    const response = await api.post('sessions', {
+    const sessionResponse = await api.post('sessions', {
       email,
       password,
       userType
     });
 
-    const { token, user } = response.data;
+    const { token, user } = sessionResponse.data;
 
     localStorage.setItem('@RecycleIt:token', token);
     localStorage.setItem('@RecycleIt:userType', userType);
@@ -98,7 +99,7 @@ const AuthProvider: React.FC = ({ children }) => {
         userType: data.userType
       });
     },
-    [setData, data.token, data.userType]
+    [setData, data]
   );
 
   return (
